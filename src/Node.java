@@ -1,3 +1,4 @@
+import java.security.KeyStore;
 import java.util.HashMap;
 
 public class Node {
@@ -32,6 +33,13 @@ public class Node {
     // returns name of node
     public String getName() {
         return this.name;
+    }
+
+    public void printLinks() {
+        System.out.printf("%s: ", this.name);
+        for (HashMap.Entry<Node, Integer> entry : links.entrySet())
+            System.out.printf("%s-%d, ", entry.getKey().getName(), entry.getValue());
+        System.out.println();
     }
 
 }
