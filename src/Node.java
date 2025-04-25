@@ -1,14 +1,17 @@
-import java.security.KeyStore;
 import java.util.HashMap;
 
 public class Node {
 
+    private int distance;
+    private Node ls_via;
     private final HashMap<Node, Integer> links;
     private final String name;
 
     public Node(String name) {
         links = new HashMap<>();
         this.name = name;
+        this.distance = -1;
+        this.ls_via = null;
     }
 
     // adds a link between this.node and a new node
@@ -40,6 +43,23 @@ public class Node {
         for (HashMap.Entry<Node, Integer> entry : links.entrySet())
             System.out.printf("%s-%d, ", entry.getKey().getName(), entry.getValue());
         System.out.println();
+    }
+
+    public boolean updateDistance(Node node, int newDist) {
+        if (distance == -1 || newDist < distance) {
+            distance = newDist;
+            ls_via = node;
+            return true;
+        }
+        return false;
+    }
+
+    public String getViaNode() {
+        return ls_via.getName();
+    }
+
+    public int getDistance() {
+        return distance;
     }
 
 }

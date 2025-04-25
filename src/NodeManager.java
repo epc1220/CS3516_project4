@@ -1,3 +1,5 @@
+import org.jetbrains.annotations.NotNull;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -13,7 +15,7 @@ public class NodeManager {
     }
 
 
-    public boolean parseInstruction(String instruction) {
+    public boolean parseInstruction(@NotNull String instruction) {
 
         try {
             if (instruction.contains("ls") || instruction.contains("dv"))
@@ -64,7 +66,7 @@ public class NodeManager {
             System.err.printf("No action occurred. [value = %d].\n", value);
     }
 
-    private boolean parseAlgorithmInstruction(String instruction) {
+    private boolean parseAlgorithmInstruction(@NotNull String instruction) {
         String[] components = instruction.split(" ");
         try {
             if (components.length != 2)
@@ -72,13 +74,18 @@ public class NodeManager {
             if (!nodeExists(components[1]))
                 throw new InvalidInputException("Node does not exist.");
 
+            Algorithm algorithm = null;
             if (components[0].equalsIgnoreCase("ls"))
-                runLinkState();
+                algorithm = new LinkStateAlgorithm(nodes, getNode(components[1]));
             else if (components[0].equalsIgnoreCase("dv"))
-                runDistanceVector();
+                algorithm = new DistanceVectorAlgorithm(nodes, getNode(components[1]));
+            else
+                throw new InvalidInputException("Instruction not recognized");
+
+            algorithm.print();
 
         } catch (InvalidInputException e) {
-            System.err.println(e);
+            System.err.println(e.getMessage());
             return false;
         }
         return true;
@@ -100,16 +107,6 @@ public class NodeManager {
     private boolean nodeExists(String name) {
         return (getNode(name) != null);
     }
-
-
-    // algorithms
-    public void runLinkState() {
-
-    }
-    public void runDistanceVector() {
-
-    }
-
 
     public void manualInput() {
         Scanner sc = new Scanner(System.in);
