@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -7,7 +6,7 @@ import java.util.Scanner;
 
 public class NodeManager {
 
-    private LinkedList<Node> nodes;
+    private final LinkedList<Node> nodes;
 
     public NodeManager() {
         this.nodes = new LinkedList<>();
