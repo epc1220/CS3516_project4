@@ -1,4 +1,9 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedList;
+import java.util.Scanner;
 
 public class NodeManager {
 
@@ -9,10 +14,13 @@ public class NodeManager {
     }
 
 
-    public void parseInstruction(String instruction) {
-        String[] components = instruction.split(" ");
+    public boolean parseInstruction(String instruction) {
 
         try {
+            if (instruction.contains("ls") || instruction.contains("dv"))
+                return parseAlgorithmInstruction(instruction);
+
+            String[] components = instruction.split(" ");
             // make sure instruction is appropriate length
             if (components.length != 3)
                 throw new InvalidInstructionException(instruction);
@@ -38,19 +46,43 @@ public class NodeManager {
         }
         catch (InvalidInstructionException e) {
             System.err.println(e.getMessage());
+            return false;
         }
+        return true;
     }
 
     private void executeInstruction(Node n1, Node n2, int value) {
         // add link if value is a positive integer, delete link if value is -1, otherwise do nothing
-        if (value >= 0)
+        if (value >= 0) {
             n1.addLink(n2, value);
+            n2.addLink(n1, value);
+        }
         else if (value == -1) {
             n1.deleteLink(n2);
             n2.deleteLink(n1);
         }
         else
             System.err.printf("No action occurred. [value = %d].\n", value);
+    }
+
+    private boolean parseAlgorithmInstruction(String instruction) {
+        String[] components = instruction.split(" ");
+        try {
+            if (components.length != 2)
+                throw new InvalidInputException("Invalid number of components.");
+            if (!nodeExists(components[1]))
+                throw new InvalidInputException("Node does not exist.");
+
+            if (components[0].equalsIgnoreCase("ls"))
+                runLinkState();
+            else if (components[0].equalsIgnoreCase("dv"))
+                runDistanceVector();
+
+        } catch (InvalidInputException e) {
+            System.err.println(e);
+            return false;
+        }
+        return true;
     }
 
     private void addNode(String name) {
@@ -80,11 +112,48 @@ public class NodeManager {
     }
 
 
+    public void manualInput() {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Enter node instructions in the format [X Y val].");
+        System.out.println("When finished adding nodes, type an algorithm instruction [ls X, dv X]");
+        String input = sc.nextLine();
+        while (!input.equals("X")) {
+            if (!parseInstruction(input))
+                System.out.println("Re-enter instruction: ");
+            else
+                System.out.println("Enter an instruction: ");
+            input = sc.nextLine();
+        }
+    }
+
+    public void readFromFile(String filename) {
+        try (BufferedReader fr = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = fr.readLine()) != null)
+                parseInstruction(line);
+
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+    }
+
+    public void printNodes() {
+        for (Node n : nodes)
+            n.printLinks();
+    }
+
     public static void main(String[] args) {
 
         NodeManager network = new NodeManager();
 
+        switch (args.length) {
+            case 0 -> network.manualInput();
+            case 1 -> network.readFromFile(args[0]);
+            default -> System.err.println("Invalid command line args.");
+        }
 
+        network.printNodes();
     }
 
 }
