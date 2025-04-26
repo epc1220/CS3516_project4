@@ -3,7 +3,6 @@ import java.util.Map;
 
 public class LinkStateAlgorithm extends Algorithm {
 
-
     public LinkStateAlgorithm(LinkedList<Node> nodes, Node origin) {
         super(nodes, origin);
         for (LinkStateNode<Node, String, Integer> lsn : this.nodes)
@@ -35,13 +34,6 @@ public class LinkStateAlgorithm extends Algorithm {
             return true;
         }
         return false;
-    }
-
-    private int getLSNIndex(Node node) {
-        for (LinkStateNode<Node, String, Integer> n : nodes)
-            if (n.getSelf().equals(node))
-                return nodes.indexOf(n);
-        return -1;
     }
 
 }

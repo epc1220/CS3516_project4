@@ -36,14 +36,14 @@ public class NodeManager {
                     addNode(components[i]);
                 }
                 else { // [last component]
-                    if (!components[i].matches("[0-9]+") && !components[i].equals("-"))
+                    if (!components[i].matches("^[-+]?\\d+$") && !components[i].equals("-"))
                         throw new InvalidInstructionException(instruction);
                 }
             }
 
             executeInstruction( getNode(components[0]),
                                 getNode(components[1]),
-                                components[2].equals("-") ? -1 : Integer.parseInt(components[2]) );
+                                components[2]);
         }
         catch (InvalidInstructionException e) {
             System.err.println(e.getMessage());
@@ -52,18 +52,15 @@ public class NodeManager {
         return true;
     }
 
-    private void executeInstruction(Node n1, Node n2, int value) {
-        // add link if value is a positive integer, delete link if value is -1, otherwise do nothing
-        if (value >= 0) {
-            n1.addLink(n2, value);
-            n2.addLink(n1, value);
-        }
-        else if (value == -1) {
+    private void executeInstruction(Node n1, Node n2, String value) {
+        if (value.equals("-")) {
             n1.deleteLink(n2);
             n2.deleteLink(n1);
         }
-        else
-            System.err.printf("No action occurred. [value = %d].\n", value);
+        else {
+            n1.addLink(n2, Integer.parseInt(value));
+            n2.addLink(n1, Integer.parseInt(value));
+        }
     }
 
     private boolean parseAlgorithmInstruction(@NotNull String instruction) {
@@ -74,7 +71,7 @@ public class NodeManager {
             if (!nodeExists(components[1]))
                 throw new InvalidInputException("Node does not exist.");
 
-            Algorithm algorithm = null;
+            Algorithm algorithm;
             if (components[0].equalsIgnoreCase("ls"))
                 algorithm = new LinkStateAlgorithm(nodes, getNode(components[1]));
             else if (components[0].equalsIgnoreCase("dv"))
@@ -142,7 +139,6 @@ public class NodeManager {
     public static void main(String[] args) {
 
         NodeManager network = new NodeManager();
-
         switch (args.length) {
             case 0 -> network.manualInput();
             case 1 -> network.readFromFile(args[0]);

@@ -13,6 +13,13 @@ public abstract class Algorithm {
     }
 
 
+    public int getLSNIndex(Node node) {
+        for (LinkStateNode<Node, String, Integer> n : nodes)
+            if (n.getSelf().equals(node))
+                return nodes.indexOf(n);
+        return -1;
+    }
+
     public void print() {
         for (LinkStateNode<Node, String, Integer> n : nodes)
             System.out.println(n);

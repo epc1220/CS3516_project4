@@ -1,20 +1,15 @@
-import java.security.KeyStore;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class Node {
 
-    private int distance;
-    private String ls_via;
     public final HashMap<Node, Integer> links;
     private final String name;
 
     public Node(String name) {
         links = new HashMap<>();
         this.name = name;
-        this.distance = -1;
-        ls_via = "-";
     }
 
     // adds a link between this.node and a new node
