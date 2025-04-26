@@ -9,3 +9,4 @@ B C 1
 C E 3
 C H 1
 G H 3
+ls A

@@ -1,17 +1,20 @@
+import java.security.KeyStore;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class Node {
 
     private int distance;
-    private Node ls_via;
-    private final HashMap<Node, Integer> links;
+    private String ls_via;
+    public final HashMap<Node, Integer> links;
     private final String name;
 
     public Node(String name) {
         links = new HashMap<>();
         this.name = name;
         this.distance = -1;
-        this.ls_via = null;
+        ls_via = "-";
     }
 
     // adds a link between this.node and a new node
@@ -38,28 +41,29 @@ public class Node {
         return this.name;
     }
 
-    public void printLinks() {
-        System.out.printf("%s: ", this.name);
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder(String.format("%s: ", this.name));
         for (HashMap.Entry<Node, Integer> entry : links.entrySet())
-            System.out.printf("%s-%d, ", entry.getKey().getName(), entry.getValue());
-        System.out.println();
+            s.append(String.format("%s-%d, ", entry.getKey().getName(), entry.getValue()));
+        return s.toString();
     }
 
-    public boolean updateDistance(Node node, int newDist) {
-        if (distance == -1 || newDist < distance) {
-            distance = newDist;
-            ls_via = node;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null)
+            return false;
+        if (this == o)
             return true;
-        }
-        return false;
+        if (!(o instanceof Node))
+            return false;
+        Node other = (Node) o;
+
+        return name.equals(other.getName());
     }
 
-    public String getViaNode() {
-        return ls_via.getName();
-    }
-
-    public int getDistance() {
-        return distance;
+    public Set<Map.Entry<Node, Integer>> getLinks() {
+        return links.entrySet();
     }
 
 }

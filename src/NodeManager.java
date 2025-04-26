@@ -136,7 +136,7 @@ public class NodeManager {
 
     public void printNodes() {
         for (Node n : nodes)
-            n.printLinks();
+            System.out.println(n);
     }
 
     public static void main(String[] args) {
@@ -148,8 +148,7 @@ public class NodeManager {
             case 1 -> network.readFromFile(args[0]);
             default -> System.err.println("Invalid command line args.");
         }
-
-        network.printNodes();
+        //network.printNodes();
     }
 
 }
