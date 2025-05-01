@@ -15,4 +15,4 @@ AUTHOR: Ethan Curley
 This project introduces us to network routing algorithms such as Link-State routing and Distance-Vector routing.
 
 ************************************ NOTES ************************************
-
+The main method resides in NodeManager.java, and accepts one command line argument, which is the filename of the network graph.
